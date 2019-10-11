@@ -1,0 +1,609 @@
+CSCI 260 - Unix Environment
+Mr Darren Seifert
+MSU, Model Hall, Room 119
+Prepared by Stephen Szwiec
+
+==Intro========================================================================
+I. Syllabus
+	A. Recommended course material: CompTIA Linux+ Study Guide 4th Edition
+	(optional)
+	B. Objectives
+		1. Shell scripting, input redirection, and C++/C code in a
+		    GNU/Linux environment
+		2. understanding of Linux file system including permissions
+		3. understanding of command and how to intermingle them to
+		   achieve more complex goals
+		4. basic system architecture, installation process, and
+		   management of Linux/Unix
+	C. General notes
+		1. Learning to use Bash scripting and vi essential to
+		   professional usage of Linux in real life
+		2. Most of the class can be completed via Oracle Virtualbox and
+		   uses Ubuntu 18.04 LTS
+		3. Any commands discussed in class can be looked up via 'man'
+		4. labs will be run for the class every Thursday
+=================================================================End of Intro==
+
+==History======================================================================
+I. What is Unix?
+	A. Bell System
+		1. Dates back to late 1960s, Originally developed by Ken
+		   Thompson and Dennis Ritchie of Bell Labs
+		2. Ritchie described the initial goal as to create a good
+		   environment in which to:
+			- do programming and development
+			- foster communal computing through remote access and
+			  close communication
+		3. Unix originally written in assembly, but was later
+		   re-written in C in 1972
+		4. first public releases in 1973, at Symposium on Operating
+		   Systems Principles; early source code sent by standard mail
+		5. 1975, Version 6 of Unix was licensed to companies for the
+		   first time. However, commercial users were rare. Licensees
+	           only recieved source code from AT&T.
+		6. Also in 1975, Ken Thompson takes a sabbatical from Bell Labs
+		   as a professor at UC Berkeley. Creates BSD: The Berkeley
+		   System Distribution of Unix 4.2.
+			- includes C-shell and vi editor for first time
+		7. 1983: Bell broken into several companies in anti-trust suit
+		   against AT&T.
+		8. AT&T new restrictive license almost kills commercial Unix.
+		   By 1991, BSD had grown to a complete rewrite of AT&T Unix
+		   and comes with BSD license.
+		9. BSD survives today as: FreeBSD, OpenBSD, NetBSD, etc.
+		   Additionally, Darwin kernel of Mac OSX continues as a form
+		   of Unix.
+	B. GNU Project into Linux
+		1. Around 1983, Richard Stallman creates GNU project
+		2. Stallman's GNU system goal was to create a 'free' system of
+		   software that had many of other capabilities of the
+		   commercial tools that many Unix also had
+		3. By 1985, Stallman had founded the Free Software Foundation
+		   to raise funds to develop free versions of all the
+		   components of the Unix syste, under GNU GPL
+		4. In 1991, Linus Torvalds began the development of a new free
+		   OS based on the MINIX operation system and SunOS. The 21
+		   year old puts together the kernel.
+		5. As the kernel for the GNU project was still very much in
+		   development, the two projects became a natural fit.
+		6. To this day, Stallman insists that Linux is GNU/Linux due to
+		   the large reliance on GNU toolchain
+===============================================================End of History==
+
+==Introduction to Ubuntu=======================================================
+I. Package Manager - APT
+	A. stands for Advanced Package Manager
+	B. Ubuntu's set of tools to install packages and keep them up to date
+	C. utilizes .deb software packages for management
+	D. keep in mind this package management system is far from standard
+		1. RPM is Linux Standard Base
+		2. Many commerical Unixes have their own package managers
+		3. when all else fails, a tarball (.tar) fille can be used to
+		   build from source
+	E. commands
+		1. apt-get update : synchronizes the index of packages to your
+		   system
+		2. apt-get upgrade : downloads and installs new versions of all
+		   currently installed packages in place, based on the index
+		3. apt-get dist-upgrade : downloads and installs new versions,
+		   and moves the system up to the next version, based on the
+		   index
+		4. sudo : was originally "superuserdo", now works to substitute
+		   users and run programs as that user. /etc/sudoers controls
+		   this behavior.
+		5. sudo apt-get install * : installs package named *
+		6. sudo apt-get remove * : removes a package named *, but not
+		   the config files
+		7. sudo apt-get purge * : removes a package named *, and
+		   removes config files
+		8. sudo apt-get source * : gets the source code for a package
+		9. sudo apt-get clean : removes downloaded packages
+		   (.deb files) used to install
+II. Filesystem
+	A. Directories
+		 1. first and bottom of the directory of the file structure
+		    tree is called root (/)
+		 2. /root: in addition, there is a file directory, within the
+		    root directory called /root ("slash root"), which acts as
+		    root's home directory
+		 3. /home : normal users' directories
+		 4. /boot : contains the boot directory, including kernel,
+		    initial RAMdisk, and bootloader
+		 5. /dev : lists all devices of the computer
+		 6. /etc : configuration files for nearly all programs that
+		    need a state
+		 7. /tmp : temporary files for the system
+		 8. /var : variable files used by programs
+			a. /var/spool : old-school webmail location
+			b. /var/www : location of http server files
+		 9. /usr : files available to users, including binaries for
+		    daily user tasks in /usr/bin
+		10. /sbin : binaries used only by root
+		11. /bin : binaries for the system everyone needs to use
+	B. Commands
+		1. cd : change directories
+		2. ~ : alias used to shortcut the current user directory
+		3. Ctrl+R : search history of commands in bash
+		4. !! : runs the previous command
+		5. ls : list in the contents of current directory
+		6. . : the current directory
+		7. .. : go up one directory
+=======================================================End of Intro to Ubuntu==
+
+==The *nix CLI=================================================================
+I. The Shell explained
+	A. A shell is a command interpreter where the user interacts with the
+	   system via command line interface (CLI)
+	B. Different shells currently in-use
+		1. Bourne-Again SHell - main shell used wqas a default on most
+		   Linux systems
+		2. sh - the Bourne Shell, old school version does not require
+		   any libraries. Rarely seen as a user-interface shell;
+		   typically a symbolic link to another shell binary. Created
+		   by Stephen Bourne, first included in Unix V7
+		3. tcsh - Tee Shell. Based on the earlier C-shell from Unix.
+		   Has some additional features built into it.
+		4. csh - C-shell, a BSD component not often seen on linux.
+		   Created by Bill Joy at UC Berkeley.
+		5. ksh - Korn shell from Bell Labs in the 1980s. The idea was
+		   to incorporate features from the Bourne Shell along with
+		   C-programming syntax.
+		6. zsh - 1990s, incorporates additional ideas into ksh.
+	C. Built-in Commands
+		1. cd - changes directory
+			i.  cd ~ or cd /home/user - are equivalent
+		2. ls - lists files in a directory
+			i.   default behavior just lists files
+			ii.  -a : lists all files including hidden ones
+			iii. -l : long format
+			iv.  -d : just directories
+			v.   -F : uses a special character to rep filetypes
+			vi.  -R : recursive listing
+		3. Single characters are substituted by ?, wildcards by *
+		4. Exiting the system
+			i.   exit : exits the current shell
+			ii.  logout: only works for login shells
+	D. Shutting down the system
+		1.   shutdown -h now : halts the system now
+		2.  shutdown -r now : restarts the system now
+		3. shutdown -h +5 " " : broadcasts the message
+			     and tells people it will be down in 5minutes
+		4. halt : on most systems, will drop the system into single
+		   user mode
+		5. poweroff : "on fire" graceless exit. Sends HW signal to kill
+		   power
+		6. reboot : estentially 'shutdown -r'
+		7. reboot -f : graceless restart exit, Sends HW signal to
+		   reboot
+	E. init : relies on a series of programs or scripts to change
+	   run-state of machine and to start/stop linux services
+	   	1. init 0 - shuts the machine down
+	   	2. init 6 - reboots the machine
+		3. init S - initializes system boot
+II. Man pages and getting help
+	A. displays the manual pages for any packages on the system
+	B. typing '/' will allow you to search through the page
+	C. allows you to move via spacebar or pgup/pgdn
+	D. man is broken up into seperate chapters: man 5 would show chapter 5
+		1. executable programs and shell
+		2. system calls
+		3. library calls
+		4. device calls
+		5. file formats
+		6. games
+		7. misc. (macro packages)
+		8. sys admin commands
+		9. kernel routines
+	E. man -k * : to find any pages matching *
+	F. most programs also allow for --help or -? to be passed for a quick
+	   rundown on commands and usage
+III. Unix filesystem permissions
+	A. filesystem permissions saved as a series of 3 bit numbers
+	B. format: d,rwx,rwx,rwx for read-write-execute
+		1. d - denotes a Directory or file
+		2. first triad is for the User of the file
+		3. second triad is for Group members of the file
+		4. third triad is for Everyone else
+	C. Read-write-execute
+		1. Read - allows the file to be opened
+		2. Write - allows for the file to be edited
+		3. Execute - allows for the file to run as a program
+	D. Directories
+		1. Read - allows for the directory to view filenames in the
+		          directory
+		2. Write - allows files to be added or deleted from a dir
+		3. Execute - allows the directory to be visited, "permission to
+		             traverse through"; must have this to execute
+			     programs within a directory
+	E. chmod - changes file and directory permissions
+		1. two modes for chmod
+			i.  symbolic mode - chmod {u,g,o}[+,-,=]{r,w,x}
+			ii. absolute mode - chmod 777 /path/to/file
+				* 0 no permissions
+				* 1 execute
+				* 2 write
+				* 4 read
+	F. chown - change file owner and group
+		1. chown user /foo - changes foo's owner to user
+		2. chown root:root /foo - changes foo's owner to root, also
+		   changes foo's group to root
+	G. echo - displays any text you enter after the command
+		1. primarially used in shell scripts or 'programs' that utilize
+		   a combination of of built-in commands, variables, and
+		   executables to complete tasks
+		2. variables reached from echo by invoking the variable name as
+		   $NAME
+==============================================================End of *nix CLI==
+
+==Input Redirection and Utils==================================================
+I.   Redirection symbols
+	A. prog > - redirects std output to the file, truncating and rewriting
+	B. prog 2> - redirect std error to the file, truncating and rewriting
+	C. &> - redirects both std output and error to file
+	D. >> - non-destructively appends to end of file rather than rewriting
+	E. ` - "backtick" process commands in the middle of another command
+		1. A tool similar to xargs
+		2. text within backticks are treated as a seperate command
+		   line who's resultes are substituted on this command line
+		3. things inside of backticks are attempted to be used as a
+		   command
+		4. example: rm ` find / - user darren `
+	F. $() - is used like a backtick; more resistant to weird syntax
+II.  Piping data between programs
+	A. programs on a UNIX system frequently use pipes to redirect each
+	   other's output.
+	B. for instance you might use a text-filtering command on
+	   output from a file reading command.
+	C. allows small progranms to operate on a flow of information in a row
+	D. | - this is an unnamed pipe
+	E. mkfifo - allows for the creation of named pipes
+		1. mkfifo fifo1
+		2. ls -l > fifo1
+		3. cat < fifo1
+III. tee - read from standard input and write to standard output and files
+	A. splits standard input so that is it is both displayed via standard
+	   output and also captured to one of more files
+	B. allows for logging and redirection while the process is also shown
+	   on screen
+	C. overwrites to a file as per '>' by default rather than like '>>'
+	D. example
+		1. echo $PATH | tee file1 file2
+		2. file1, file2, and stdoutput all have same information
+IV.  find - searches for files in directory hierarchy
+V.   xargs - builds a command from standard input, using command name and
+             arguments to that command and then executes the command on each
+	     line of standard input
+	A. example: find / - user darren | xargs -d %\n rm
+
+VI.  file - returns the type of file and metadata information regarding files
+VII. join - combines two text files by matching the contents of specified
+fields
+	A. by default, join uses spaces as the limiters (unless -t CHAR is
+ 	   given)
+	B. example: join -1 3 -2 2
+		1. this joins the third field of the first file and the second
+		   field of the second file
+VIII. paste
+	A. Paste is like cat rotated 90 degrees. When operating on multiple
+	   files, it will merge the lines of the files.
+IX. expand - converts tabs to spaces
+	A. by default assumes you want 8 spaces per tab; -t changes
+	B. unexpand - converts spaces to tabs
+X. od - dump files into octal and other formats
+	A. default usage is dumping binary file into octal binary format
+	B. -x for 2byte hex output
+XI. sort - sorts lines of text files
+	A. writes sorted concatenation of all files as output
+	B. by default, uses first column
+	C. Important options
+		1. -f : ignore case
+		2. -m : sort by three digit month abbreviation; ex, jan
+		3. -n : numeric sort
+		4. -v : sort by versio
+		5. -h : compare human readable numbers
+		6. -r : reverses the sort
+		7. -R : sorts randomly but groups like files
+		8. -d : dictionary-order
+		9. -k : sort via key, sorts by a field number, can be
+		        comma-seperated listq
+	D. the opposite of this is 'shuf'
+XII. split - splits a file into 2 or more files
+	A. needs to have an output file prefix
+	B. where do you want to split
+		1. -b : size in bytes
+		2. -l : lines
+	C. example: split -l 2 listening1.txt numbers
+		-> output is: 'numbersaa' and 'numbersab'
+	D. by default: splits every 10,000 lines
+XIII. tr - trnaslate or delete characters
+	A. changes individual characters coming in through standard input and
+	   outputs via standard output
+	B. options
+		1. [:lower:] - all lower case chars
+		2. [:upper:] - all upper case chars
+		3. [::]
+XIV. cut - extracts portions of lines of input and prints out as output
+	A. used to remove items within lines, delimited by spaces or tabs
+	B. options
+		1. -b : cuts the specified list by byte
+		2. -c : cuts the specified characters
+		3. -f : cuts specified list of fields from input
+		4. -d : specifies the delimiter for fields
+	C. EXAMPLE: cut -f 7 -d : /etc/passwd
+XV. Uniq - take an input list and report or omit repeated lines
+	A. only if they are next to each other, so you have to sort first
+	B. EXAMPLE: cut -f 7 -d : /etc/passwd | sort | uniq
+===========================================End of Input Redirection and Utils==
+
+==C++ programs and Makefiles===================================================
+I. Basic C++ program with input and output
+//example//////////////////////////////////////////////////////////////////////
+int main (int args, char * argv[]){
+	for(int x = 0; x < argv[],x++){
+		cout << arv[x] << endl;
+	}
+return 0;
+}
+// outputs every character given to it
+
+///////////////////////////////////////////////////////////////////////////////
+
+II. Let's write a less good version of grep called greb:
+///////////////////////////////////////////////////////////////////////////////
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main(int argc, char * argv[]) {
+	string curLine;
+	if (argc == 2){
+		while(getline(cin,curLine)) {
+			if (curLine.find(argv[1]) != string::npos) {
+				cout << curLine << endl;
+			}
+		}
+	}
+
+	else if (argc == 3){
+		ifstream inFile(argv[2], ifstream::in);
+
+		while(getline(inFile,curLine)) {
+			if (curLine.find(argv[1]) != string::npos) {
+				cout << curLine << endl;
+			}
+		}
+	}
+	else {
+		cerr << "Error: unknown parameters." << endl;
+		return 1;
+	}
+	return 0;
+}
+///////////////////////////////////////////////////////////////////////////////
+III. Make
+	A. Allows for automatic configuration and creation of usable
+	   binararies from OOP files, and can be used to install and uninstall
+	   programs
+	B. Allows for the creation of archives of source code that build as
+	   packages into useful code
+	C. typically named 'makefile'
+//example//////////////////////////////////////////////////////////////////////
+# set a variables for the compiler
+CC = g++
+LC_MESSAGES=C
+CFLAGS=-g -Wall
+
+# target name variable
+TARGET = greb
+
+# file extension
+FILEXT = cpp
+
+# the build target executable => install path of the executable
+PREFIX = /usr/local
+DESTDIR = /home/bernd/staging/
+
+# basic makefile format
+# name of instruction: dependencies
+# <tab> command to execute
+# the FIRST one you list is the default
+$(TARGET): $(TARGET).$(FILEXT)
+	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).$(FILEXT)
+
+.PHONY: all
+all: $(TARGET).$(FILEXT)
+	$(CC) $(MAKEOPTS) $(CFLAGS) -o $(TARGET) $(TARGET).$(FILEXT)
+
+.PHONY: clean
+clean:
+	rm $(TARGET)
+
+.PHONY: install
+install: $(TARGET)
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	cp $< $(DESTDIR)$(PREFIX)/bin/$<
+
+///////////////////////////////////////////////////////////////////////////////
+
+=========================================End of C++ Programs and Makefiles=====
+
+==Tar and Packaging============================================================
+I. tar
+	A. the name 'tar' comes from its original purpose: Tape ARchive
+	B. you can bundle files as .tar, 'tarballs', which contain a series of
+	   file entries and terminating bytes between files
+	C. each entry has a file descriptor and the binary contents of the
+	   file
+	D. file descriptor, or header, contains the name of a file, a
+	   checksum of that file, and permissions data
+	E. does not compress data, but instead keeps it in one file
+	F. tar options:
+		-c: Creates a tar archive
+		-v: Verbose output
+		-x: eXtract from a tar archive
+		-f: specify a Filename
+		-A: Appends two archives together
+		-M: create or extract a multivolume archive
+		-j: specify bzip2 compression
+		-J: specify xz compression
+		-z: specify gzip compression
+		--lzma: specify lzma compression
+		-t: Test an archive
+=====================================================End of Tar and Packaging==
+
+==More Unix Commands===========================================================
+I. fmt - format
+	A. some files have crazy long lines of text
+	B. reformats to a certain -width
+	C. by default, truncates after 75 characters and cleans up paragraphs
+	D. anything with 2+ blankline removed, and adds indention
+	E. -s : prevents truncation of paragraphs
+II. nl - line number
+	A. nl does count whitespace by default
+	B. identical to cat -b (but not cat -n)
+III. pr - prepare a file for printing
+	A. includes header, footer, and page breaks
+	B. create colummns: pr -3 file.txt
+ 	C. -l sets the length of lines
+	D. -o choose the header text
+IV. regular expressions - sed and awk
+	A. simliar to wildcard expansion: ex; ls *.txt
+	B. grep and sed are two examples of regEx programs
+	C. unix system programs have two different forms of regular
+	   expressions: basic and extended
+	D. types of expresssions:
+		1. exact text match: grep "blah" returns all lines with
+		   "blah"
+		2. bracketed expressions: b[aeiou]g - returns bag, beg, big,
+		   bog, bug
+		3. bracketed with range: a[2-4]z - returns a2z, a3z, a4z
+		4. matching single char: a.z (allows for anything between a
+		   and z)
+		5. matching begin/end of line: ^ beginning, $ end
+		6. any of these can be combined with the wildcard: *
+		   ex: A.* Lincoln (with 0 or more occurances of a pattern.)
+		   ex: A[ae]* Lincoln (with 0 or more occurances of a-e
+		   after A.
+		7. matching at least one of: + symbol
+		     ex. A[ae]+ Lincoln - returns at least Aa or Ae Lincoln
+		8. multiple possibilities or: | needs to be set up with '
+		   ex. 'Darren (F|Fredrick) Seifert'
+		9. grep -E invokes regex functionality
+====================================================End of More Unix Commands==
+
+==Sed==========================================================================
+I. Sed - Stream EDitor
+	A. the sed command uses regular expressions to modify stdin and
+	sends the changes to stdout
+	B. usage : sed [options] script.txt [inputfile]
+	C. some of the commands that can be used in the script portion
+		=       - display the current lin number
+		a\text  - append text to file
+		i\text  - insert text to file
+		r file  - apppend text from filename into the file
+		c\text  - replace the selected range with the text
+		s/2012/2013 - replace the first occurance of 2012 on first
+		              occurance on each line
+		s/2012/2013/g  - replace '' '' every occurance on each line
+	D. examples
+		sed 's/Nick|nick/Gary/g' < salaryprojections.txt
+		^ this would replace any 'Nick' or 'nick' with 'Gary' at all
+		points in the file
+
+		sed 's/^/    /' file.txt > file.new.txt
+===================================================================End of Sed==
+
+==Shell Scripting==============================================================
+I.   The first line of a shell script tells which program to use to interpret
+     the contents: #!/bin/bash or another shell
+   	A. the first two characters are (#!) are special code to tell the kernel
+           this is a script - crunchbang, shebang, hashbang, poundbang
+	B. the remaining lines beginning with # are considered comments
+	   # this is a comment
+II.  Classic Hello World
+//hello.sh/////////////////////////////////////////////////////////////////////
+#!/bin/bash
+# Print out hello world
+echo 'Hello World!'
+///////////////////////////////////////////////////////////////////////////////
+III. When you want to run a shell script, it needs to be made executable before
+     it is an executable file: '# chmod u+x ./file.sh'
+IV.  Can be invoked with ./file.sh
+V.   Alternative routes:
+	A. bash file.sh works whether or not #!/bin/bash or chmod +x has been
+	   given
+	B. exec file.sh is used to run scripts from within other scripts and
+	   to stop the tty instance after it is done (used to run scripts
+	   within scripts)
+VI.  Passing Parameters
+	A. much like C++ programs, bash scripts can be passed parameters
+	B. accessing these, the dollar sign is used, much like PHP or Perl, to
+	   call the number of the parameter
+		1. $0 - the name of the running script itself
+		2. $1 - the first parameter
+		3. and so on...
+		4. $? - returns the exit status of the last run command
+		5. $$ - returns the process ID (PID) of the current script
+		6. $USER - returns the username of the user running the script
+		7. $SECONDS - returns the runtime of the current script
+		8. $RANDOM - generates a random number (int 0 - 32000)
+		9. $LINENO - current line of script
+	C. creation of new variables
+		1. variablename=value # no spaces ever
+		2. if you do want spaces, they must be escaped by quotes
+		3. double quotes recommended for variable substitution later
+		4. for instance varname="value $1" allows for insertion of
+		   other variables into variables whereas varname='value $1'
+		   will not work
+	D. saving output into variables
+		1. output from programs can be saved into a variable
+		2. example: curdir=$(pwd) will run pwd and return the standard
+		   output as a variable
+		3. if you want to capture the standard error for a command, it
+		   can be saved as error=$(</tmp/error)
+		4. alternative use: curdir=`pwd` # note the backtics
+//foo.sh///////////////////////////////////////////////////////////////////////
+#!/bin/bash
+# An example script
+cp $1 $2
+#verify it worked
+echo "Details for $2"
+ls -l $2
+///////////////////////////////////////////////////////////////////////////////
+
+	E. Handling user input and output can use 'echo' to create interactive
+	   scripts:
+//plususer.sh//////////////////////////////////////////////////////////////////
+#!/bin/bash
+echo -n 'Please enter user name for account:'
+read username # this saves the stdin input as username
+read -p 'Username' $username # -n no-newline
+echo $username
+read -sp 'Password:' password # -s stealth
+///////////////////////////////////////////////////////////////////////////////
+
+	F. scripts can also handle files as standard input like other commands
+//salesreport.sh///////////////////////////////////////////////////////////////
+#!/bin/bash
+#a sales report generated from standard input
+echo Data Summary:
+cat /dev/stdin | cut -d ' ' -F2,3 | sort
+///////////////////////////////////////////////////////////////////////////////
+	G. variables can be made global via export
+//script.sh////////////////////////////////////////////////////////////////////
+#!/bin/bash
+var1=blah
+var2=foo
+echo $0 :: var1 : $var1 , var2 : $var2
+export var1
+exec ./script2
+echo $0 :: var1 : $var1 , var2 : $var2
+///////////////////////////////////////////////////////////////////////////////
+//script2.sh///////////////////////////////////////////////////////////////////
+#!/bin/bash
+echo $0 :: var1 : $var1 , var2 : $var2
+var1=flop
+var2=bleh
+echo $0 :: var1 : $var1 , var2 : $var2
+///////////////////////////////////////////////////////////////////////////////
+=======================================================End of Shell Scripting==

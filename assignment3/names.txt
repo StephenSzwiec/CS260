@@ -1,0 +1,19 @@
+Austin, Ashley D	0691194	Graded	4.00	Computer Science	ENRL 
+Bender, Isaiah J	0892980	Graded	4.00	Computer Science	ENRL 
+Berdahl, Joshua A	0927809	Graded	4.00	Computer Science	ENRL 
+Biggs, Brittany A	0116181	Graded	4.00	Computer Science	ENRL 
+Burke, Thomas M	0347447	Graded	4.00	Computer Science	ENRL
+Chikate, Tinomutenda	0552150	Graded	4.00	Computer Science	ENRL
+Ebel, Christopher A	0114831	Graded	4.00	Computer Science	ENRL
+France, Tyler J	0771892	Graded	4.00	Computer Science	ENRL
+Heck, Michael E	0994910	Graded	4.00	Computer Science	ENRL
+Idim, Confidence	0164591	Graded	4.00	Computer Science	ENRL 
+Kamalanathan, Divyaa V	0767610	Graded	4.00	Computer Science	ENRL 
+Poland, Adam M	0346056	Graded	4.00	Computer Science	ENRL 
+Qayyum, Danish K	0147386	Graded	4.00	Computer Science	ENRL 
+Rothermund, Noah P	0290918	Graded	4.00	Computer Science	ENRL 
+Rustamov, Dalerjon D	0204853	Graded	4.00	Computer Science	ENRL 
+Sheikh, Adam O	0578203	Graded	4.00	Math/CS	ENRL 
+Smith, Briana	0684761	Graded	4.00	Computer Science	ENRL 
+Swiss, Matthew A	0850803	Graded	4.00	Computer Science	ENRL 
+Tiwari, Rohit	0417153	Graded	4.00	Computer Science	ENRL

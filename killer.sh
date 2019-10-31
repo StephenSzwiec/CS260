@@ -9,22 +9,29 @@
 
 #!/bin/bash
 CURRENT_PID=$(echo $$)
-PS=$(ps -eo pid,etimes,cmd)
-PID=$(awk 'NR>1 {print $1}' <<< $PS)
-ETIMES=$(awk 'NR>1 {print $2}' <<< $PS)
-CMD=$(awk 'NR>1 {print $3}' <<< $PS)
+PS=$(ps -eo uid,pid,etimes,cmd)
+PID=$(awk 'NR>1 {print $2}' <<< $PS)
+ETIMES=$(awk 'NR>1 {print $3}' <<< $PS)
+CMD=$(awk 'NR>1 {print $4}' <<< $PS)
+PUID=$(awk 'NR>1 {print $1}' <<< $PS)
+CURRUID=$(id -u)
 COUNT=0
 for PROCESS in $PID
 do
 	(( COUNT++ ))
 	PROCESS_TIME=$(awk -v nr=$COUNT 'NR==nr {print $1}' <<< $ETIMES)
 		if [ $PROCESS_TIME -gt 3600 ]
-		then 
+		then
 			if [ $CURRENT_PID -ne $PROCESS ]
 			then
-				PROCESS_NAME=$(awk -v nr=$COUNT 'NR==nr {print $1}' <<< $CMD)
-				echo killing $PROCESS_NAME because it has lived $PROCESS_TIME seconds!
-				kill -9 $PROCESS
+				PROCESS_UID=$(awk -v nr=$COUNT 'NR==nr {print $1}' <<< $PUID)
+				if [ $PROCESS_UID -eq $CURRUID ]
+				then
+					PROCESS_NAME=$(awk -v nr=$COUNT 'NR==nr {print $1}' <<< $CMD)
+					echo killing $PROCESS_NAME because it has lived $PROCESS_TIME seconds!
+					#kill -9 $PROCESS
+				fi
 			fi
+
 		fi
 done
